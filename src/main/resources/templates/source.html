@@ -2,8 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout :: head('Administrator')}"></head>
 <head>
-<body>
-    <div class="container my-5">
+<body th:replace="~{layout :: base(~{::section})}">
+    <section>
         <div>
             <h1>뉴스 발행처</h1>
         </div>
@@ -27,7 +27,7 @@
                 </tr>
             </tbody>
         </table>
-    </div>
+    </section>
 </head>
 
 
