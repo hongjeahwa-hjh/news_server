@@ -28,9 +28,9 @@ public class Article {
     @JoinColumn(name= "category", foreignKey = @ForeignKey(name = "article_ibfk_2"))
     private Category category;
 
-    @Column(length = 150)
+    @Column(length = 100)
     private String author;
-    @Column(length = 500)
+    @Column(length = 255)
     private String title;
     @Column(columnDefinition = "Text")
     private String description;
