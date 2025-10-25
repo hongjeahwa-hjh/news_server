@@ -44,12 +44,12 @@
                 </li>
                 <!-- 이전 -->
                 <li class="page-item" th:classappend="${sources.first} ? 'disabled'">
-                    <a class="page-link" th:href="@{/admin/source(page=${source.number-1}, size=${sources.size})}">이전</a>
+                    <a class="page-link" th:href="@{/admin/source(page=${sources.number-1}, size=${sources.size})}">이전</a>
                 </li>
                 <!-- 페이지 번호(최대 10개) -->
                 <li class="page-item"
-                    th:each="i: ${#numbers.sequence(sources.number/10)*10,
-                                                    T(java.lang.Math).min((source.number/10)*10+9, source.total-1)}"
+                    th:each="i: ${#numbers.sequence((sources.number/10)*10,
+                                                    T(java.lang.Math).min((sources.number/10)*10+9, sources.totalPages-1))}"
                     th:classappend="${sources.number == i} ? active">
                     <a class="page-link"
                        th:href="@{/admin/source(page=${i}, size=${sources.size})}"
@@ -57,11 +57,11 @@
                 </li>
                 <!-- 다음 -->
                 <li class="page-item" th:classappend="${sources.last} ? 'disabled'">
-                    <a class="page-link" th:href="@{/admin/source(page=${source.number+1}, size=${sources.size})}">다음</a>
+                    <a class="page-link" th:href="@{/admin/source(page=${sources.number+1}, size=${sources.size})}">다음</a>
                 </li>
                 <!-- 마지막 -->
                 <li class="page-item" th:classappend="${sources.last} ? 'disabled'">
-                    <a class="page-link" th:href="@{/admin/source(page=${sources.totalPages}, size=${sources.size})}">마지막</a>
+                    <a class="page-link" th:href="@{/admin/source(page=${sources.totalPages-1}, size=${sources.size})}">마지막</a>
                 </li>
             </ul>
         </nav>
