@@ -6,13 +6,33 @@
         <!-- Thymeleaf 템플릿 형태, bootstrap css를 이용하여 -->
         <h2>Dashboard</h2>
         <hr>
-        <div>
-            <!-- 기사수 -->
-            <p th:text="${counts.articles}"></p>
-            <!-- 발행처 수-->
-            <p th:text="${counts.sources}"></p>
-            <!-- 카테고리 수-->
-            <p th:text="${counts.categories}"></p>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">기사 수</h5>
+                        <p class="card-text fs-1 fw-bold" th:text="${counts.articles}">12500</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">발행처 수</h5>
+                        <p class="card-text fs-1 fw-bold" th:text="${counts.sources}">45</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">카테고리 수</h5>
+                        <p class="card-text fs-1 fw-bold" th:text="${counts.categories}">12</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </section>
