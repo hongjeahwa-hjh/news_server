@@ -11,7 +11,9 @@ import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +48,15 @@ public class NewsService {
     /*@Autowired
     * private CategoryRepository categoryRepository;
     * */
+
+    public Page<ArticleDTO> getArticles(Pageable pageable) {
+        // 페이징 리퀘스트를 발행일자로 내림차순 정렬하여 만든다
+        Pageable sorted = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by(Sort.Direction.DESC, "publishedAt"));
+        return articleRepository.findAll(sorted).map(Article::toDTO);
+    }
 
     public NewsResponse getGeneral() throws URISyntaxException, IOException, InterruptedException {
         String url = "https://newsapi.org/v2/top-headlines?country=us&apiKey=b97989d0e99e4e108349a7a5b961dbaf";
@@ -155,8 +166,8 @@ public class NewsService {
 
 
         //  for(Source source : sources) {}
-        //  stream().foreach( Funtional Interface -> 익명 클래스 ->람다식)
-        //  stream().map(Funtional Interface -> 익명 클래스 -> 람다식)
+        //  stream().foreach( Functional Interface -> 익명 클래스 ->람다식)
+        //  stream().map(Functional Interface -> 익명 클래스 -> 람다식)
         //  map( source -> {
         //   Source.toDTO(source)
         //  }

@@ -4,32 +4,45 @@
 <body th:replace="~{layout :: base(~{::section})}">
     <section>
         <!-- Thymeleaf 템플릿 형태, bootstrap css를 이용하여 -->
-        <h2>Dashboard</h2>
+        <h2>대시보드</h2>
         <hr>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card bg-primary text-white">
-                    <div class="card-body">
-                        <h5 class="card-title">기사 수</h5>
-                        <p class="card-text fs-1 fw-bold" th:text="${counts.articles}">12500</p>
+        <div class="row g-3 my-3">
+            <div class="col-12 col-lg-4">
+                <div class="dboard-box" style="--bg-color:#28a745">
+                    <div class="dboard-title">총 기사수</div>
+                    <div class="dboard-content">
+                        <div class="dboard-value">
+                            <span th:text="${counts.articles}"></span>
+                        </div>
+                        <div class="dboard-icon">
+                            <i class="bi bi-card-list"></i>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-4">
-                <div class="card bg-success text-white">
-                    <div class="card-body">
-                        <h5 class="card-title">발행처 수</h5>
-                        <p class="card-text fs-1 fw-bold" th:text="${counts.sources}">45</p>
+            <div class="col-12 col-lg-4">
+                <div class="dboard-box" style="--bg-color:#FFA500">
+                    <div class="dboard-title">발행처 수</div>
+                    <div class="dboard-content">
+                        <div class="dboard-value">
+                            <span th:text="${counts.sources}"></span>
+                        </div>
+                        <div class="dboard-icon">
+                            <i class="bi bi-bell"></i>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-4">
-                <div class="card bg-info text-white">
-                    <div class="card-body">
-                        <h5 class="card-title">카테고리 수</h5>
-                        <p class="card-text fs-1 fw-bold" th:text="${counts.categories}">12</p>
+            <div class="col-12 col-lg-4">
+                <div class="dboard-box" style="--bg-color:#EE82EE">
+                    <div class="dboard-title">카테고리 수</div>
+                    <div class="dboard-content">
+                        <div class="dboard-value">
+                            <span th:text="${counts.categories}"></span>
+                        </div>
+                        <div class="dboard-icon">
+                            <i class="bi bi-bookmark"></i>
+                        </div>
                     </div>
                 </div>
             </div>
