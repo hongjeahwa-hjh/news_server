@@ -1,9 +1,6 @@
 package com.example.hello.news.service;
 
-import com.example.hello.news.dto.ArticleDTO;
-import com.example.hello.news.dto.CountArticleByCategory;
-import com.example.hello.news.dto.NewsResponse;
-import com.example.hello.news.dto.SourceByArticleDTO;
+import com.example.hello.news.dto.*;
 import com.example.hello.news.entity.Article;
 import com.example.hello.news.entity.Category;
 import com.example.hello.news.entity.Source;
@@ -13,7 +10,10 @@ import com.example.hello.news.repository.SourceRepository;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -111,11 +111,53 @@ public class ArticleService {
             throw new RuntimeException(e);
         }
     }
-
     public List<SourceByArticleDTO> getArticleCountBySource() {
-        // JPA : Jakarta Persistence
-        // JPQL : JPA 전용 Query Language
-        // 기사가 많은 순서대로 상위 10개만 가져온다
-        return articleRepository.countArticleBySource(PageRequest.of(0,10));
+        return null;
+    }
+
+    public Page<ArticleDTO> searchArticles(String query, String searchType, Pageable pageable) {
+        if(query == null || query.trim().isEmpty()){
+            return Page.empty(pageable);
+        }
+        String trimmedQuery = query.trim();
+        Page<Article> articlePage;
+
+        switch (searchType.toLowerCase()){
+            case "title":
+                articlePage = articleRepository.findByTitleContaining(trimmedQuery, pageable);
+                break;
+            case "content":
+                articlePage = articleRepository.findByDescriptionContaining(trimmedQuery, pageable);
+                break;
+            case "author":
+                articlePage = articleRepository.findByAuthorContaining(trimmedQuery, pageable);
+                break;
+            default:
+                articlePage = articleRepository.findByTitleContaining(trimmedQuery, pageable);
+                break;
+        }
+        return articlePage.map(this::convertToDto);
+    }
+
+    private ArticleDTO convertToDto(Article article) {
+        if (article == null) {
+            return null;
+        }
+        SourceDTO sourceDTO = convertSourceToDto(article.getSource());
+
+        return ArticleDTO.builder()
+                .source(sourceDTO)
+                .author(article.getAuthor())
+                .title(article.getTitle())
+                .description(article.getDescription())
+                .url(article.getUrl())
+                .urlToImage(article.getUrlToImage())
+                .publishedAt(article.getPublishedAt())
+                .content(article.getContent())
+                .build();
+    }
+
+    private SourceDTO convertSourceToDto(Source source) {
+        return Source.toDTO(source);
     }
 }

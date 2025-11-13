@@ -26,4 +26,9 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
             "from Article a " + "group by a.source.name, a.source.url " + "order by COUNT(a.id) desc")
     List<SourceByArticleDTO> countArticleBySource(Pageable pageable);
 
+    Page<Article> findByTitleContaining(String query, Pageable pageable);
+
+    Page<Article> findByDescriptionContaining(String query, Pageable pageable);
+
+    Page<Article> findByAuthorContaining(String query, Pageable pageable);
 }

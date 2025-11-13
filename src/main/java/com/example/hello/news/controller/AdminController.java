@@ -1,9 +1,6 @@
 package com.example.hello.news.controller;
 
-import com.example.hello.news.dto.CategoryDTO;
-import com.example.hello.news.dto.CountArticleByCategory;
-import com.example.hello.news.dto.SourceByArticleDTO;
-import com.example.hello.news.dto.SourceDTO;
+import com.example.hello.news.dto.*;
 import com.example.hello.news.entity.Category;
 import com.example.hello.news.service.ArticleService;
 import com.example.hello.news.service.NewsService;
@@ -159,5 +156,21 @@ public class AdminController {
     public String index(Model model){
         return "redirect:/admin/dashboard";
     }
+
+    @GetMapping("/search")
+    public String searchArticles(Model model, Pageable pageable, @RequestParam(value = "query", required = false) String query, @RequestParam(value = "searchType", defaultValue = "title") String searchType) {
+        if (query != null && !query.trim().isEmpty()) {
+            Page<ArticleDTO> searchResults = articleService.searchArticles(query, searchType, pageable);
+            model.addAttribute("article", searchResults);
+            model.addAttribute("query", query);
+            model.addAttribute("searchType", searchType);
+        } else {
+            model.addAttribute("article", Page.empty(pageable));
+        }
+        List<CategoryDTO> categories = newsService.getCategories();
+        model.addAttribute("categories", categories);
+        return "news";
+    }
+
 
 }
