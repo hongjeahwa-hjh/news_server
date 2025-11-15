@@ -5,7 +5,7 @@
 <body>
     <div class="container my-5">
         <div class="mb-3">
-            <h1>NEW Service</h1>
+            <h1>NEWS Service</h1>
         </div>
         <div class="row my-4">
             <form action="/admin/search" method="get" class="d-flex">
@@ -26,7 +26,7 @@
             </form>
         </div>
 
-        <div th:if="${articles.content != null}" class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
+        <div th:if="${articles != null and articles.content != null}" class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
             <!-- 반복문 -->
             <div th:each="article : ${articles.content}" class="col">
                 <div class="card shadow-sm">
@@ -56,8 +56,6 @@
 
         <nav>
             <ul class="pagination justify-content-center my-3">
-                <th:block th:with="path = '/admin/search',
-                                   params = ${#strings.concat('query=', query, '&searchType=', searchType)}">
                 <!-- 처음 -->
                 <li class="page-item" th:classappend="${articles.first} ? 'disabled'">
                     <a class="page-link" th:href="@{/news(page=0, size=${articles.size})}">처음</a>
@@ -83,7 +81,6 @@
                 <li class="page-item" th:classappend="${articles.last} ? 'disabled'">
                     <a class="page-link" th:href="@{/news(page=${articles.totalPages-1}, size=${articles.size})}">마지막</a>
                 </li>
-                </th:block>
             </ul>
         </nav>
     </div>

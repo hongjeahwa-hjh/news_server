@@ -161,11 +161,11 @@ public class AdminController {
     public String searchArticles(Model model, Pageable pageable, @RequestParam(value = "query", required = false) String query, @RequestParam(value = "searchType", defaultValue = "title") String searchType) {
         if (query != null && !query.trim().isEmpty()) {
             Page<ArticleDTO> searchResults = articleService.searchArticles(query, searchType, pageable);
-            model.addAttribute("article", searchResults);
+            model.addAttribute("articles", searchResults);
             model.addAttribute("query", query);
             model.addAttribute("searchType", searchType);
         } else {
-            model.addAttribute("article", Page.empty(pageable));
+            model.addAttribute("articles", Page.empty(pageable));
         }
         List<CategoryDTO> categories = newsService.getCategories();
         model.addAttribute("categories", categories);
