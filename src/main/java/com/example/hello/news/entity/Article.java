@@ -51,6 +51,17 @@ public class Article {
     private LocalDateTime updatedAt;
 
 
+    /**
+     * ArticleDTO를 이용하여 Article(Entity) 객체를 생성하여 반환하는 함수.
+     *
+     * <p>DTO에 담긴 기사 정보를 기반으로 새로운 Article 객체를 만들고,
+     * 지정된 Source와 Category를 설정한다.</p>
+     *
+     * @param dto 변환에 사용할 ArticleDTO 객체
+     * @param src 설정할 뉴스 소스(Source) 객체
+     * @param cat 설정할 카테고리(Category) 객체
+     * @return ArticleDTO 정보를 반영한 새로운 Article(Entity) 객체
+     */
     // ArticleDTO를 이용하여 Article(Entity)를 생상하여 반환하는 함수
     public static Article fromDTO(ArticleDTO dto, Source src, Category cat) {
         Article article = new Article();
@@ -68,7 +79,15 @@ public class Article {
         return article;
     }
 
-
+    /**
+     * Article(Entity) 객체를 ArticleDTO로 변환하여 반환하는 함수.
+     *
+     * <p>Article 객체의 필드 값을 DTO로 복사하고,
+     * 관련된 Source 객체도 SourceDTO로 변환하여 설정한다.</p>
+     *
+     * @param article 변환할 Article(Entity) 객체
+     * @return Article 정보를 반영한 새로운 ArticleDTO 객체
+     */
     public static ArticleDTO toDTO(Article article) {
         ArticleDTO dto = new ArticleDTO();
         dto.setAuthor(article.getAuthor());

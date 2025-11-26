@@ -30,7 +30,6 @@ public class AdminController {
     * @param model : 템플릿에 전달할 데이터 세트(org.springframework.ui.Model)
     * @return 카테고리 템플릿 페이지
     * */
-
     @GetMapping("/category")
     public String categories(Model model) {
         // 데이터베이스로부터 카테고리 정보를 가져와서 admin의 category페이지에 전달한다.
@@ -39,6 +38,17 @@ public class AdminController {
         return "category";      // templates directory아래에 있는 category.html을 랜더링해라
     }
 
+    /**
+     * /inputCategory 요청을 처리하기 위한 함수.
+     * 전달된 category_name 값을 검증한 후, 유효한 경우 Category 엔티티를 생성하여
+     * newsService를 통해 데이터베이스에 저장한다.
+     * 저장 중 오류가 발생하면 오류 메시지와 함께 카테고리 목록을 다시 조회하여
+     * category 템플릿으로 반환한다.
+     *
+     * @param categoryName 클라이언트로부터 전달된 카테고리명 (category_name)
+     * @param model 템플릿에 전달할 데이터 세트(org.springframework.ui.Model)
+     * @return 성공 시 /admin/category로 리다이렉트, 실패 시 category 템플릿 페이지
+     */
     // category_name으로부터 전달된 데이터를 데이터베이스에 저장하라는 request
     @PostMapping("/inputCategory")
     public String inputCategory(@RequestParam("category_name") String categoryName, Model model){
@@ -63,6 +73,17 @@ public class AdminController {
         return "redirect:/admin/category";
     }
 
+    /**
+     * /updateCategory/{id} 요청을 처리하기 위한 함수.
+     * 전달된 카테고리 ID, 카테고리명, 메모를 기반으로 해당 카테고리 정보를 수정한다.
+     * 수정 작업은 newsService를 통해 수행되며, 완료 후 카테고리 목록 페이지로 리다이렉트한다.
+     *
+     * @param categoryId 수정할 카테고리의 고유 ID
+     * @param categoryName 수정할 카테고리명
+     * @param categoryMemo 수정할 메모 내용
+     * @param model 템플릿에 전달할 데이터 세트(org.springframework.ui.Model)
+     * @return 수정 완료 후 /admin/category 페이지로 리다이렉트
+     */
     @PostMapping("/updateCategory/{id}")
     public String updateCategory(@PathVariable("id")String categoryId,
                                  @RequestParam("name")String categoryName,
@@ -72,6 +93,16 @@ public class AdminController {
         return "redirect:/admin/category";
     }
 
+    /**
+     * /deleteCategory/{id} 요청을 처리하기 위한 함수.
+     * 전달된 카테고리 ID를 기준으로 해당 카테고리를 삭제한다.
+     * 삭제 과정에서 예외가 발생하면 오류 메시지를 모델에 담아
+     * category 템플릿 페이지를 다시 렌더링한다.
+     *
+     * @param id 삭제할 카테고리의 고유 ID
+     * @param model 템플릿에 전달할 데이터 세트(org.springframework.ui.Model)
+     * @return 삭제 성공 시 /admin/category로 리다이렉트, 실패 시 category 템플릿 페이지
+     */
     @PostMapping("/deleteCategory/{id}")
     public String deleteCategory(@PathVariable String id, Model model) {
         try {
@@ -83,7 +114,15 @@ public class AdminController {
         return "redirect:/admin/category";
     }
 
-
+    /**
+     * /source 요청을 처리하기 위한 함수.
+     * 전달된 Pageable 정보를 기반으로 뉴스 소스(Source) 데이터를 페이징하여 조회하고,
+     * 조회된 데이터를 모델에 담아 source 템플릿으로 전달한다.
+     *
+     * @param model 템플릿에 전달할 데이터 세트(org.springframework.ui.Model)
+     * @param pageable 페이징 처리를 위한 페이지 정보(org.springframework.data.domain.Pageable)
+     * @return source 템플릿 페이지
+     */
     @GetMapping("/source")
     public String getSource(Model model, Pageable pageable) {
         Page<SourceDTO> sources = newsService.getSources(pageable);
@@ -93,6 +132,15 @@ public class AdminController {
         return "source";
     }
 
+    /**
+     * /inputSources 요청을 처리하기 위한 함수.
+     * 뉴스 소스 데이터를 외부 API 등에서 가져와 데이터베이스에 저장하는 작업을 수행한다.
+     * 처리 과정에서 발생할 수 있는 예외(URISyntaxException, IOException, InterruptedException 등)를
+     * 처리하여 오류 메시지를 모델에 담고 source 템플릿 페이지를 반환한다.
+     *
+     * @param model 템플릿에 전달할 데이터 세트(org.springframework.ui.Model)
+     * @return 성공 시 /admin/source 로 리다이렉트, 실패 시 source 템플릿 페이지
+     */
     @GetMapping("/inputSources")
     public String inputSources(Model model) {
         try {
@@ -105,6 +153,23 @@ public class AdminController {
         return "redirect:/admin/source";
     }
 
+    /**
+     * /article 요청을 처리하기 위한 함수.
+     * 뉴스 기사와 관련된 통계 정보를 조회하여 템플릿에 전달한다.
+     *
+     * <p>조회하는 정보:
+     * <ul>
+     *   <li>전체 기사 개수</li>
+     *   <li>카테고리별 기사 개수</li>
+     *   <li>전체 카테고리 목록</li>
+     *   <li>상위 10개 뉴스 소스별 기사 개수</li>
+     *   <li>상위 10개를 제외한 기타 기사 개수</li>
+     * </ul>
+     * </p>
+     *
+     * @param model 템플릿에 전달할 데이터 세트(org.springframework.ui.Model)
+     * @return article 템플릿 페이지
+     */
     @GetMapping("/article")
     public String article(Model model){
         // 카테고리 목록
@@ -131,7 +196,18 @@ public class AdminController {
         return "article";
     }
 
-
+    /**
+     * /inputArticles 요청을 처리하기 위한 함수.
+     * 클라이언트로부터 전달된 카테고리 이름을 기준으로 기사 데이터를 외부 API 등에서 가져와
+     * 데이터베이스에 저장하는 작업을 수행한다.
+     *
+     * <p>처리 과정에서 URISyntaxException, IOException, InterruptedException 등이 발생할 수 있으며,
+     * 예외 발생 시 오류 메시지를 모델에 담아 article 템플릿 페이지를 반환한다.</p>
+     *
+     * @param category 클라이언트로부터 전달된 카테고리명 (categoryName)
+     * @param model 템플릿에 전달할 데이터 세트(org.springframework.ui.Model)
+     * @return 성공 시 /admin/article로 리다이렉트, 실패 시 article 템플릿 페이지
+     */
     @PostMapping("/inputArticles")
     public String inputArticles(@RequestParam("categoryName")String category, Model model){
         try {
@@ -145,6 +221,19 @@ public class AdminController {
         return "redirect:/admin/article";
     }
 
+    /**
+     * /dashboard 요청을 처리하기 위한 함수.
+     * 뉴스 관련 주요 통계 정보를 조회하여 템플릿에 전달한다.
+     *
+     * <p>조회하는 정보:
+     * <ul>
+     *   <li>뉴스, 카테고리, 기사 등 주요 레코드의 개수</li>
+     * </ul>
+     * </p>
+     *
+     * @param model 템플릿에 전달할 데이터 세트(org.springframework.ui.Model)
+     * @return dashboard 템플릿 페이지
+     */
     @GetMapping("/dashboard")
     public String dashboard(Model model){
         HashMap<String, Long> counts = newsService.getRecordCount();
@@ -152,11 +241,32 @@ public class AdminController {
         return  "dashboard";
     }
 
+    /**
+     * 루트("/") 요청을 처리하기 위한 함수.
+     * 요청이 들어오면 자동으로 /admin/dashboard 경로로 리다이렉트한다.
+     *
+     * @param model 템플릿에 전달할 데이터 세트(org.springframework.ui.Model) — (현재는 사용하지 않음)
+     * @return /admin/dashboard로 리다이렉트
+     */
     @GetMapping("/")
     public String index(Model model){
         return "redirect:/admin/dashboard";
     }
 
+    /**
+     * /search 요청을 처리하기 위한 함수.
+     * 전달된 검색어(query)와 검색 타입(searchType)을 기반으로 뉴스 기사를 검색하고,
+     * 검색 결과를 템플릿에 전달한다.
+     *
+     * <p>검색어가 없는 경우에는 빈 페이지를 전달하며,
+     * 전체 카테고리 목록은 항상 템플릿에 포함된다.</p>
+     *
+     * @param model 템플릿에 전달할 데이터 세트(org.springframework.ui.Model)
+     * @param pageable 페이징 처리를 위한 페이지 정보(org.springframework.data.domain.Pageable)
+     * @param query 검색어 (선택적, null 또는 빈 문자열이면 전체 결과 없음)
+     * @param searchType 검색 유형 ("title" 기본값)
+     * @return news 템플릿 페이지
+     */
     @GetMapping("/search")
     public String searchArticles(Model model, Pageable pageable, @RequestParam(value = "query", required = false) String query, @RequestParam(value = "searchType", defaultValue = "title") String searchType) {
         if (query != null && !query.trim().isEmpty()) {
