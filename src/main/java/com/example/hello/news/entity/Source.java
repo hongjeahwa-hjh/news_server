@@ -47,6 +47,17 @@ public class Source {
     @Column(name="updated_at", insertable = false)
     private LocalDateTime updatedAt;
 
+    /**
+     * Source 엔티티 객체를 SourceDTO로 변환하는 정적 메서드.
+     *
+     * <p>DB에서 조회한 {@link Source} 엔티티를 클라이언트나 서비스 계층에서
+     * 활용하기 위한 {@link SourceDTO} 객체로 매핑한다.
+     * 엔티티의 주요 필드(id, name, description, url, category, language, country)를
+     * 동일하게 DTO에 복사하여 반환한다.</p>
+     *
+     * @param source 변환할 Source 엔티티 객체
+     * @return SourceDTO 변환 결과 DTO 객체
+     */
     public static SourceDTO toDTO(Source source) {
         SourceDTO dto = new SourceDTO();
         dto.setId( source.getSid() );
